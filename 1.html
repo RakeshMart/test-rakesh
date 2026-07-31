@@ -5358,7 +5358,7 @@
         </div>
         <div id="automation-tabs"
           style="display:none;gap:4px;background:rgba(255,255,255,.15);padding:4px;border-radius:12px;margin-top:.6rem;">
-          <button id="atab-new" class="automation-tab-btn active" onclick="setAutomationTab('new')"><i
+          <button id="atab-new" class="automation-tab-btn active" onclick="handleNewOrderTabClick()"><i
               class="fa fa-plus"></i> New Order</button>
           <button id="atab-place" class="automation-tab-btn" onclick="setAutomationTab('place')"><i
               class="fa fa-list-check"></i> Place Order</button>
@@ -7140,6 +7140,16 @@
       document.getElementById('schedule-items-page').style.display = 'none';
     }
     function saveAutomationOrders() { localStorage.setItem('kiranaAutomationOrders', JSON.stringify(automationOrders)); }
+
+    function handleNewOrderTabClick() {
+      var newBtn = document.getElementById('atab-new');
+      var alreadyOnNewTab = newBtn && newBtn.classList.contains('active');
+      if (alreadyOnNewTab) {
+        openScheduleBrowsePage();
+      } else {
+        setAutomationTab('new');
+      }
+    }
 
     function setAutomationTab(tab) {
       var newBtn = document.getElementById('atab-new');
