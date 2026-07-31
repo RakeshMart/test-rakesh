@@ -1844,6 +1844,211 @@
       transform: translateY(0);
     }
 
+    .freq-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 1rem;
+      margin-top: 1.2rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .07);
+      border: 1px solid rgba(34, 197, 94, .15);
+    }
+
+    .freq-card-header {
+      font-weight: 800;
+      font-size: .95rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: .8rem;
+    }
+
+    .freq-card-header i {
+      color: #22c55e;
+    }
+
+    .freq-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: .8rem;
+    }
+
+    .freq-opt {
+      flex: 1 1 auto;
+      min-width: 88px;
+      padding: .55rem .7rem;
+      border-radius: 12px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      color: var(--text);
+      font-weight: 700;
+      font-size: .78rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      transition: all .2s ease;
+    }
+
+    .freq-opt i {
+      font-size: .78rem;
+    }
+
+    .freq-opt:hover {
+      border-color: #22c55e;
+      color: #16a34a;
+    }
+
+    .freq-opt.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, .35);
+    }
+
+    .freq-detail {
+      border-top: 1px dashed #e3e7e5;
+      padding-top: .8rem;
+    }
+
+    .freq-row {
+      margin-bottom: .9rem;
+    }
+
+    .freq-label {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-weight: 700;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+
+    .freq-date-input,
+    .freq-time-select {
+      width: 100%;
+      padding: .65rem .8rem;
+      border-radius: 12px;
+      border: 1.5px solid #e3e7e5;
+      font-family: 'Nunito', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--text);
+      background: #f8faf9;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+      gap: .4rem;
+    }
+
+    .date-cell {
+      padding: .5rem 0;
+      border-radius: 10px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-weight: 700;
+      font-size: .78rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .2s ease;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .date-cell:hover {
+      border-color: #22c55e;
+    }
+
+    .date-cell.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+      gap: .4rem;
+    }
+
+    .day-toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+      gap: .4rem;
+    }
+
+    .day-toggle {
+      padding: .6rem 0;
+      border-radius: 10px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-weight: 700;
+      font-size: .78rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .2s ease;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .day-toggle:hover {
+      border-color: #22c55e;
+    }
+
+    .day-toggle.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .freq-summary {
+      margin-top: 1rem;
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 14px;
+      padding: .7rem .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+
+    .freq-summary-text {
+      font-weight: 800;
+      font-size: .82rem;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .freq-change-btn {
+      padding: .4rem .8rem;
+      border-radius: 50px;
+      border: none;
+      background: #fff;
+      color: #16a34a;
+      font-weight: 800;
+      font-size: .75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+      font-family: 'Nunito', sans-serif;
+    }
+
+    @media (min-width: 640px) {
+      .freq-opt {
+        min-width: 100px;
+      }
+    }
+
     .schedule-header-badge {
       position: absolute;
       top: -4px;
@@ -4929,6 +5134,7 @@
       <div class="wp-body">
         <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Add to Schedule</div>
         <div id="schedule-detail-content"></div>
+        <div id="freq-card-wrap-detail"></div>
       </div>
     </div>
 
@@ -4977,6 +5183,7 @@
       <div class="wp-body">
         <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Schedule Items</div>
         <div id="schedule-items-list"></div>
+        <div id="freq-card-wrap-list"></div>
       </div>
     </div>
 
@@ -6657,6 +6864,7 @@
       addOrUpdateScheduleItem(currentProductId, scheduleQty);
       renderScheduleDetail(p);
       document.getElementById('schedule-detail-page').style.display = 'flex';
+      renderFrequencyCard('detail');
     }
     function renderScheduleDetail(p) {
       var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
@@ -6731,6 +6939,7 @@
     function openScheduleItemsPage() {
       document.getElementById('schedule-items-page').style.display = 'flex';
       renderScheduleItemsList();
+      renderFrequencyCard('list');
     }
     function closeScheduleItemsPage() {
       document.getElementById('schedule-items-page').style.display = 'none';
@@ -6766,6 +6975,162 @@
         updateScheduleBadge();
         renderScheduleItemsList();
       }
+    }
+
+    // ===== SCHEDULE FOR (frequency picker) =====
+    var scheduleFrequency = JSON.parse(localStorage.getItem('kiranaScheduleFreq') || 'null') || { type: null, date: '', time: '', month: '', monthDate: '', days: [] };
+    var FREQ_OPTIONS = [
+      { key: 'daily', label: 'Daily', icon: 'fa-rotate' },
+      { key: 'onetime', label: 'One Time', icon: 'fa-calendar-day' },
+      { key: 'monthly', label: 'Monthly', icon: 'fa-calendar-week' },
+      { key: 'yearly', label: 'Yearly', icon: 'fa-calendar' },
+      { key: 'alternate', label: 'Alternative', icon: 'fa-shuffle' },
+      { key: 'weekly', label: 'Weekly', icon: 'fa-calendar-days' }
+    ];
+    var WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    function saveScheduleFrequency() { localStorage.setItem('kiranaScheduleFreq', JSON.stringify(scheduleFrequency)); }
+    function todayStrGlobal() {
+      var d = new Date(); var m = ('0' + (d.getMonth() + 1)).slice(-2); var day = ('0' + d.getDate()).slice(-2);
+      return d.getFullYear() + '-' + m + '-' + day;
+    }
+    function formatDateDisplay(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr + 'T00:00:00');
+      return d.getDate() + ' ' + MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function formatTimeDisplay(val) {
+      if (!val) return '';
+      var h = parseInt(val.split(':')[0], 10);
+      var period = h < 12 ? 'AM' : 'PM'; var h12 = h % 12; if (h12 === 0) h12 = 12;
+      return h12 + ':00 ' + period;
+    }
+    function timeSlotOptionsHtml(selected) {
+      var html = '';
+      for (var h = 8; h <= 21; h++) {
+        var period = h < 12 ? 'AM' : 'PM'; var h12 = h % 12; if (h12 === 0) h12 = 12;
+        var val = h + ':00'; var label = h12 + ':00 ' + period;
+        html += '<option value="' + val + '"' + (selected === val ? ' selected' : '') + '>' + label + '</option>';
+      }
+      return html;
+    }
+    function buildTimeRowHtml(cid) {
+      return '<div class="freq-row"><span class="freq-label"><i class="fa fa-clock"></i> Time Chuno</span>' +
+        '<select class="freq-time-select" onchange="updateFrequencyField(\'' + cid + '\',\'time\',this.value)">' +
+        '<option value="">-- Time --</option>' + timeSlotOptionsHtml(scheduleFrequency.time) + '</select></div>';
+    }
+    function monthDateGridHtml(cid, maxDay) {
+      var html = '';
+      for (var d = 1; d <= maxDay; d++) {
+        html += '<button class="date-cell' + (String(scheduleFrequency.monthDate) === String(d) ? ' active' : '') + '" onclick="updateFrequencyField(\'' + cid + '\',\'monthDate\',' + d + ')">' + d + '</button>';
+      }
+      return html;
+    }
+    function monthGridHtml(cid) {
+      return MONTH_NAMES.map(function (m) {
+        return '<button class="date-cell' + (scheduleFrequency.month === m ? ' active' : '') + '" onclick="selectYearlyMonth(\'' + cid + '\',\'' + m + '\')">' + m + '</button>';
+      }).join('');
+    }
+    function selectYearlyMonth(cid, m) {
+      scheduleFrequency.month = m; scheduleFrequency.monthDate = '';
+      saveScheduleFrequency();
+      refreshFrequencyDetail(cid);
+    }
+    function weekDayGridHtml(cid, isAlternate) {
+      return WEEK_DAYS.map(function (d, idx) {
+        var active = scheduleFrequency.days && scheduleFrequency.days.indexOf(idx) !== -1;
+        return '<button class="day-toggle' + (active ? ' active' : '') + '" onclick="toggleDay(\'' + cid + '\',' + idx + ',' + isAlternate + ')">' + d + '</button>';
+      }).join('');
+    }
+    function toggleDay(cid, idx, isAlternate) {
+      if (!scheduleFrequency.days) scheduleFrequency.days = [];
+      if (isAlternate) {
+        var pattern = [idx, (idx + 2) % 7, (idx + 4) % 7, (idx + 6) % 7];
+        var alreadySet = pattern.every(function (p) { return scheduleFrequency.days.indexOf(p) !== -1; });
+        scheduleFrequency.days = alreadySet ? [] : pattern;
+      } else {
+        var pos = scheduleFrequency.days.indexOf(idx);
+        if (pos === -1) scheduleFrequency.days.push(idx); else scheduleFrequency.days.splice(pos, 1);
+      }
+      saveScheduleFrequency();
+      refreshFrequencyDetail(cid);
+    }
+    function updateFrequencyField(cid, field, value) {
+      scheduleFrequency[field] = value;
+      saveScheduleFrequency();
+      refreshFrequencyDetail(cid);
+    }
+    function buildFrequencySummaryHtml(cid) {
+      var f = scheduleFrequency; var text = '';
+      if (f.type === 'onetime' && f.date) { text = 'One Time — ' + formatDateDisplay(f.date) + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'monthly' && f.monthDate) { text = 'Monthly — Date ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'yearly' && f.month && f.monthDate) { text = 'Yearly — ' + f.month + ' ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'alternate' && f.days && f.days.length) { text = 'Alternate Din — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', '); }
+      else if (f.type === 'weekly' && f.days && f.days.length) { text = 'Weekly — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', '); }
+      else if (f.type === 'daily') { text = 'Daily' + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      if (!text) return '';
+      return '<div class="freq-summary"><div class="freq-summary-text"><i class="fa fa-circle-check"></i> ' + text + '</div>' +
+        '<button class="freq-change-btn" onclick="clearFrequencySelection(\'' + cid + '\')"><i class="fa fa-pen"></i> Change</button></div>';
+    }
+    function buildFrequencyDetailHtml(cid) {
+      var f = scheduleFrequency; if (!f.type) return '';
+      var html = '';
+      if (f.type === 'onetime') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar-day"></i> Date Chuno</span>' +
+          '<input type="date" class="freq-date-input" min="' + todayStrGlobal() + '" value="' + (f.date || '') + '" onchange="updateFrequencyField(\'' + cid + '\',\'date\',this.value)"></div>';
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'monthly') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-hashtag"></i> Date Chuno (1-31)</span>' +
+          '<div class="date-grid">' + monthDateGridHtml(cid, 31) + '</div></div>';
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'yearly') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar"></i> Month Chuno</span>' +
+          '<div class="month-grid">' + monthGridHtml(cid) + '</div></div>';
+        if (f.month) {
+          var mi = MONTH_NAMES.indexOf(f.month); var days = MONTH_DAYS[mi] || 31;
+          html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-hashtag"></i> Date Chuno</span>' +
+            '<div class="date-grid">' + monthDateGridHtml(cid, days) + '</div></div>';
+        }
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'alternate') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-shuffle"></i> Din Chuno</span>' +
+          '<div class="day-toggle-grid">' + weekDayGridHtml(cid, true) + '</div></div>';
+      } else if (f.type === 'weekly') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar-days"></i> Din Chuno</span>' +
+          '<div class="day-toggle-grid">' + weekDayGridHtml(cid, false) + '</div></div>';
+      } else if (f.type === 'daily') {
+        html += buildTimeRowHtml(cid);
+      }
+      html += buildFrequencySummaryHtml(cid);
+      return html;
+    }
+    function refreshFrequencyDetail(cid) {
+      var el = document.getElementById('freq-detail-' + cid);
+      if (el) el.innerHTML = buildFrequencyDetailHtml(cid);
+    }
+    function selectFrequency(cid, key) {
+      scheduleFrequency = { type: key, date: '', time: '', month: '', monthDate: '', days: [] };
+      saveScheduleFrequency();
+      renderFrequencyCard(cid);
+    }
+    function clearFrequencySelection(cid) {
+      scheduleFrequency = { type: null, date: '', time: '', month: '', monthDate: '', days: [] };
+      saveScheduleFrequency();
+      renderFrequencyCard(cid);
+    }
+    function buildFrequencyCardHtml(cid) {
+      var optsHtml = FREQ_OPTIONS.map(function (o) {
+        return '<button class="freq-opt' + (scheduleFrequency.type === o.key ? ' active' : '') + '" onclick="selectFrequency(\'' + cid + '\',\'' + o.key + '\')"><i class="fa ' + o.icon + '"></i> ' + o.label + '</button>';
+      }).join('');
+      return '<div class="freq-card"><div class="freq-card-header"><i class="fa fa-calendar-check"></i> Schedule For</div>' +
+        '<div class="freq-options">' + optsHtml + '</div>' +
+        '<div class="freq-detail" id="freq-detail-' + cid + '">' + buildFrequencyDetailHtml(cid) + '</div></div>';
+    }
+    function renderFrequencyCard(cid) {
+      var wrap = document.getElementById('freq-card-wrap-' + cid);
+      if (wrap) wrap.innerHTML = buildFrequencyCardHtml(cid);
     }
 
     // ============================================================
