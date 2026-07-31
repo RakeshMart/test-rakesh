@@ -7122,10 +7122,18 @@
       var si = document.getElementById('sb-search-input'); if (si) si.value = '';
       renderScheduleBrowseGrid();
       updateScheduleBadge();
+      if (scheduleBrowseReturnTo !== 'scheduleItems') scheduleBrowseReturnTo = 'home';
     }
     function closeScheduleBrowsePage() {
       document.getElementById('schedule-browse-page').style.display = 'none';
-      showTab('home');
+      if (scheduleBrowseReturnTo === 'scheduleItems') {
+        scheduleBrowseReturnTo = 'home';
+        document.getElementById('schedule-items-page').style.display = 'flex';
+        renderScheduleItemsList();
+        syncFrequencyCards();
+      } else {
+        showTab('home');
+      }
     }
     function openScheduleItemsPage() {
       document.getElementById('schedule-items-page').style.display = 'flex';
@@ -7141,10 +7149,14 @@
     }
     function saveAutomationOrders() { localStorage.setItem('kiranaAutomationOrders', JSON.stringify(automationOrders)); }
 
+    var scheduleBrowseReturnTo = 'home'; // 'home' ya 'scheduleItems' — batata hai wapas kahan jaana hai
+
     function handleNewOrderTabClick() {
       var newBtn = document.getElementById('atab-new');
       var alreadyOnNewTab = newBtn && newBtn.classList.contains('active');
       if (alreadyOnNewTab) {
+        scheduleBrowseReturnTo = 'scheduleItems';
+        document.getElementById('schedule-items-page').style.display = 'none';
         openScheduleBrowsePage();
       } else {
         setAutomationTab('new');
