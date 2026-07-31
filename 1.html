@@ -5312,6 +5312,9 @@
         <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Add to Schedule</div>
         <div id="schedule-detail-content"></div>
         <div id="freq-card-wrap-detail"></div>
+        <button class="add-more-btn" id="set-automation-btn-detail" style="margin-top:1rem"
+          onclick="setAutomationOrder()"><i class="fa fa-robot"></i> <span
+            id="set-automation-btn-detail-txt">Set Automation Order</span></button>
       </div>
     </div>
 
@@ -7300,10 +7303,19 @@
 
       var btnTxt = document.getElementById('set-automation-btn-txt');
       if (btnTxt) btnTxt.textContent = 'Set Automation Order';
+      var btnTxtDetail = document.getElementById('set-automation-btn-detail-txt');
+      if (btnTxtDetail) btnTxtDetail.textContent = 'Set Automation Order';
       renderScheduleItemsList();
       syncFrequencyCards();
 
       showToast('Automation order set ho gaya!', 'success');
+
+      // Product-detail se ya schedule-browse se call hua ho to un pages ko band karo
+      document.getElementById('schedule-detail-page').style.display = 'none';
+      document.getElementById('schedule-browse-page').style.display = 'none';
+      scheduleBrowseReturnTo = 'home';
+
+      document.getElementById('schedule-items-page').style.display = 'flex';
       var tabsEl = document.getElementById('automation-tabs');
       if (tabsEl) tabsEl.style.display = 'flex';
       setAutomationTab('place');
