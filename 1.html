@@ -1815,6 +1815,35 @@
       background: #22c55e !important;
     }
 
+    .add-more-btn {
+      width: 100%;
+      margin-top: 1rem;
+      padding: .9rem;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      font-weight: 800;
+      font-size: .92rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, .35);
+      transition: all .25s ease;
+    }
+
+    .add-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(34, 197, 94, .45);
+    }
+
+    .add-more-btn:active {
+      transform: translateY(0);
+    }
+
     .schedule-header-badge {
       position: absolute;
       top: -4px;
@@ -4912,7 +4941,7 @@
               src="https://raw.githubusercontent.com/RakeshMart/Rakesh-logo/main/rakesh-mart-logo.jpg"
               alt="Rakesh Mart"></div>
           <div class="wp-header-icons">
-            <button class="wp-icon-btn" title="Schedule">
+            <button class="wp-icon-btn" onclick="openScheduleItemsPage()" title="Schedule">
               <i class="fa fa-clock"></i>
               <span class="wp-badge schedule-header-badge" id="sb-header-badge">0</span>
             </button>
@@ -6641,7 +6670,7 @@
         '<span class="qty-val" id="sd-qty-val">1</span>' +
         '<button class="qty-btn" onclick="changeScheduleQty(1)"><i class="fa fa-plus"></i></button></div></div>' +
         '<div class="sd-total-row"><span>Total</span><span id="sd-total-price">₹' + p.price + '</span></div>' +
-        '<button class="btn btn-schedule" style="width:100%;margin-top:1rem" onclick="openScheduleBrowsePage()"><i class="fa fa-plus"></i> Add More Item</button>';
+        '<button class="add-more-btn" onclick="openScheduleBrowsePage()"><i class="fa fa-plus"></i> Add More Item</button>';
     }
     function changeScheduleQty(d) {
       scheduleQty = Math.max(1, scheduleQty + d);
@@ -6720,9 +6749,23 @@
         return '<div class="cart-item"><div class="cart-img">' + imgHtml + '</div>' +
           '<div class="cart-info"><div class="cart-name">' + getName(item) + '</div>' +
           '<div class="cart-price">₹' + (item.price * item.qty) + '</div>' +
-          '<div class="cart-controls"><span style="color:var(--muted);font-size:.75rem">Qty: ' + item.qty + ' × ₹' + item.price + '</span>' +
-          '<button class="cart-remove" onclick="removeScheduleItem(' + item.id + ')"><i class="fa fa-trash"></i> ' + t('remove') + '</button></div></div></div>';
+          '<div class="cart-controls">' +
+          '<button class="cart-qty-btn" onclick="changeScheduleListQty(' + item.id + ',-1)"><i class="fa fa-minus"></i></button>' +
+          '<span class="cart-qty-val">' + item.qty + '</span>' +
+          '<button class="cart-qty-btn" onclick="changeScheduleListQty(' + item.id + ',1)"><i class="fa fa-plus"></i></button>' +
+          '<span style="color:var(--muted);font-size:.75rem">× ₹' + item.price + '</span>' +
+          '<button class="cart-remove" onclick="removeScheduleItem(' + item.id + ')"><i class="fa fa-trash"></i> ' + t('remove') + '</button>' +
+          '</div></div></div>';
       }).join('');
+    }
+    function changeScheduleListQty(id, d) {
+      var item = scheduleItems.find(function (s) { return s.id == id; });
+      if (item) {
+        item.qty = Math.max(1, item.qty + d);
+        localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+        updateScheduleBadge();
+        renderScheduleItemsList();
+      }
     }
 
     // ============================================================
