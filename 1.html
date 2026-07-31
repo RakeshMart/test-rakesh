@@ -5199,8 +5199,7 @@
               <i class="fa fa-bell"></i>
               <span class="wp-badge" id="wp-notif-badge">0</span>
             </button>
-            <button class="wp-icon-btn"
-              onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
+            <button class="wp-icon-btn" onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
               <i class="fa fa-bag-shopping"></i>
               <span class="wp-badge" id="wp-cart-badge">0</span>
             </button>
@@ -6978,7 +6977,7 @@
     }
 
     // ===== SCHEDULE FOR (frequency picker) =====
-    var scheduleFrequency = JSON.parse(localStorage.getItem('kiranaScheduleFreq') || 'null') || { type: null, date: '', time: '', month: '', monthDate: '', days: [] };
+    var scheduleFrequency = JSON.parse(localStorage.getItem('kiranaScheduleFreq') || 'null') || { type: null, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
     var FREQ_OPTIONS = [
       { key: 'daily', label: 'Daily', icon: 'fa-rotate' },
       { key: 'onetime', label: 'One Time', icon: 'fa-calendar-day' },
@@ -6990,6 +6989,7 @@
     var WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    var FREQ_CARD_IDS = ['detail', 'list'];
 
     function saveScheduleFrequency() { localStorage.setItem('kiranaScheduleFreq', JSON.stringify(scheduleFrequency)); }
     function todayStrGlobal() {
@@ -7001,25 +7001,87 @@
       var d = new Date(dateStr + 'T00:00:00');
       return d.getDate() + ' ' + MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
     }
+    function getTimeFormat() { return localStorage.getItem('kiranaTimeFormat') || '12'; }
+    function setTimeFormat(fmt) { localStorage.setItem('kiranaTimeFormat', fmt); }
     function formatTimeDisplay(val) {
       if (!val) return '';
-      var h = parseInt(val.split(':')[0], 10);
+      var parts = val.split(':'); var h = parseInt(parts[0], 10); var m = parseInt(parts[1], 10) || 0;
+      if (getTimeFormat() === '24') return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2);
       var period = h < 12 ? 'AM' : 'PM'; var h12 = h % 12; if (h12 === 0) h12 = 12;
-      return h12 + ':00 ' + period;
+      return h12 + ':' + ('0' + m).slice(-2) + ' ' + period;
     }
-    function timeSlotOptionsHtml(selected) {
-      var html = '';
-      for (var h = 8; h <= 21; h++) {
-        var period = h < 12 ? 'AM' : 'PM'; var h12 = h % 12; if (h12 === 0) h12 = 12;
-        var val = h + ':00'; var label = h12 + ':00 ' + period;
-        html += '<option value="' + val + '"' + (selected === val ? ' selected' : '') + '>' + label + '</option>';
-      }
-      return html;
+    function parseTimeVal(val) {
+      if (!val) return { h: 8, m: 0 };
+      var parts = val.split(':'); var h = parseInt(parts[0], 10); var m = parseInt(parts[1], 10);
+      if (isNaN(h)) h = 8; if (isNaN(m)) m = 0;
+      return { h: h, m: m };
+    }
+    function formatTime24(h, m) { return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2); }
+    function clampTime(h, m) {
+      if (h < 8) { h = 8; m = 0; }
+      if (h > 21) { h = 21; m = 0; }
+      if (h === 21 && m > 0) m = 0;
+      if (m < 0) m = 0; if (m > 59) m = 59;
+      return { h: h, m: m };
     }
     function buildTimeRowHtml(cid) {
-      return '<div class="freq-row"><span class="freq-label"><i class="fa fa-clock"></i> Time Chuno</span>' +
-        '<select class="freq-time-select" onchange="updateFrequencyField(\'' + cid + '\',\'time\',this.value)">' +
-        '<option value="">-- Time --</option>' + timeSlotOptionsHtml(scheduleFrequency.time) + '</select></div>';
+      var t = parseTimeVal(scheduleFrequency.time);
+      var fmt = getTimeFormat();
+      var dispH, ampm;
+      if (fmt === '12') { dispH = t.h % 12; if (dispH === 0) dispH = 12; ampm = t.h < 12 ? 'AM' : 'PM'; }
+      else { dispH = t.h; ampm = ''; }
+      var html = '<div class="freq-row"><span class="freq-label"><i class="fa fa-clock"></i> Time Chuno</span>' +
+        '<div class="time-picker-row">' +
+        '<button class="time-fmt-btn" onclick="toggleTimeFormat()" title="12/24 Hour Format"><i class="fa fa-repeat"></i> ' + fmt + 'H</button>' +
+        '<div class="time-picker-box">' +
+        '<div class="tp-col"><button class="tp-arrow" onclick="stepTimeUnit(\'h\',1)"><i class="fa fa-chevron-up"></i></button>' +
+        '<input type="text" inputmode="numeric" class="tp-input" value="' + ('0' + dispH).slice(-2) + '" onchange="onTimeManualInput(\'h\',this.value)">' +
+        '<button class="tp-arrow" onclick="stepTimeUnit(\'h\',-1)"><i class="fa fa-chevron-down"></i></button></div>' +
+        '<div class="tp-colon">:</div>' +
+        '<div class="tp-col"><button class="tp-arrow" onclick="stepTimeUnit(\'m\',1)"><i class="fa fa-chevron-up"></i></button>' +
+        '<input type="text" inputmode="numeric" class="tp-input" value="' + ('0' + t.m).slice(-2) + '" onchange="onTimeManualInput(\'m\',this.value)">' +
+        '<button class="tp-arrow" onclick="stepTimeUnit(\'m\',-1)"><i class="fa fa-chevron-down"></i></button></div>';
+      if (fmt === '12') {
+        html += '<div class="tp-col tp-col-ampm"><button class="tp-arrow" onclick="stepTimeUnit(\'p\',1)"><i class="fa fa-chevron-up"></i></button>' +
+          '<div class="tp-input tp-ampm-val">' + ampm + '</div>' +
+          '<button class="tp-arrow" onclick="stepTimeUnit(\'p\',-1)"><i class="fa fa-chevron-down"></i></button></div>';
+      }
+      html += '</div></div></div>';
+      return html;
+    }
+    function stepTimeUnit(unit, dir) {
+      var t = parseTimeVal(scheduleFrequency.time); var h = t.h, m = t.m;
+      if (unit === 'm') { m += dir; if (m > 59) { m = 0; h += 1; } if (m < 0) { m = 59; h -= 1; } }
+      else if (unit === 'h') { h += dir; }
+      else if (unit === 'p') { h += dir * 12; }
+      var c = clampTime(h, m);
+      scheduleFrequency.time = formatTime24(c.h, c.m);
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function onTimeManualInput(unit, value) {
+      var t = parseTimeVal(scheduleFrequency.time);
+      var num = parseInt(value, 10); if (isNaN(num)) num = 0;
+      var fmt = getTimeFormat();
+      if (unit === 'h') {
+        if (fmt === '12') {
+          if (num < 1) num = 1; if (num > 12) num = 12;
+          var isPM = t.h >= 12; var h24 = num % 12; if (isPM) h24 += 12;
+          t.h = h24;
+        } else { if (num < 0) num = 0; if (num > 23) num = 23; t.h = num; }
+      } else if (unit === 'm') { if (num < 0) num = 0; if (num > 59) num = 59; t.m = num; }
+      var c = clampTime(t.h, t.m);
+      scheduleFrequency.time = formatTime24(c.h, c.m);
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function toggleTimeFormat() {
+      setTimeFormat(getTimeFormat() === '12' ? '24' : '12');
+      syncFrequencyCards();
+    }
+    function openDatePicker(cid) {
+      var el = document.getElementById('freq-date-input-' + cid);
+      if (el && el.showPicker) { try { el.showPicker(); } catch (e) { } }
     }
     function monthDateGridHtml(cid, maxDay) {
       var html = '';
@@ -7036,7 +7098,21 @@
     function selectYearlyMonth(cid, m) {
       scheduleFrequency.month = m; scheduleFrequency.monthDate = '';
       saveScheduleFrequency();
-      refreshFrequencyDetail(cid);
+      syncFrequencyCards();
+    }
+    function altSkipSelectorHtml() {
+      var skip = scheduleFrequency.altSkip || 1;
+      var html = '<div class="freq-row"><span class="freq-label"><i class="fa fa-forward"></i> Kitne Din Chhodein</span><div class="skip-selector">';
+      for (var i = 1; i <= 5; i++) {
+        html += '<button class="skip-btn' + (skip === i ? ' active' : '') + '" onclick="setAltSkip(' + i + ')">' + i + '</button>';
+      }
+      html += '</div></div>';
+      return html;
+    }
+    function setAltSkip(n) {
+      scheduleFrequency.altSkip = n; scheduleFrequency.days = [];
+      saveScheduleFrequency();
+      syncFrequencyCards();
     }
     function weekDayGridHtml(cid, isAlternate) {
       return WEEK_DAYS.map(function (d, idx) {
@@ -7047,20 +7123,21 @@
     function toggleDay(cid, idx, isAlternate) {
       if (!scheduleFrequency.days) scheduleFrequency.days = [];
       if (isAlternate) {
-        var pattern = [idx, (idx + 2) % 7, (idx + 4) % 7, (idx + 6) % 7];
-        var alreadySet = pattern.every(function (p) { return scheduleFrequency.days.indexOf(p) !== -1; });
-        scheduleFrequency.days = alreadySet ? [] : pattern;
+        var skip = scheduleFrequency.altSkip || 1; var step = skip + 1; var pattern = [];
+        for (var d = idx; d <= 6; d += step) pattern.push(d);
+        var same = pattern.length === scheduleFrequency.days.length && pattern.every(function (p) { return scheduleFrequency.days.indexOf(p) !== -1; });
+        scheduleFrequency.days = same ? [] : pattern;
       } else {
         var pos = scheduleFrequency.days.indexOf(idx);
         if (pos === -1) scheduleFrequency.days.push(idx); else scheduleFrequency.days.splice(pos, 1);
       }
       saveScheduleFrequency();
-      refreshFrequencyDetail(cid);
+      syncFrequencyCards();
     }
     function updateFrequencyField(cid, field, value) {
       scheduleFrequency[field] = value;
       saveScheduleFrequency();
-      refreshFrequencyDetail(cid);
+      syncFrequencyCards();
     }
     function buildFrequencySummaryHtml(cid) {
       var f = scheduleFrequency; var text = '';
@@ -7079,7 +7156,7 @@
       var html = '';
       if (f.type === 'onetime') {
         html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar-day"></i> Date Chuno</span>' +
-          '<input type="date" class="freq-date-input" min="' + todayStrGlobal() + '" value="' + (f.date || '') + '" onchange="updateFrequencyField(\'' + cid + '\',\'date\',this.value)"></div>';
+          '<div class="freq-date-row" onclick="openDatePicker(\'' + cid + '\')"><input type="date" class="freq-date-input" id="freq-date-input-' + cid + '" min="' + todayStrGlobal() + '" value="' + (f.date || '') + '" onchange="updateFrequencyField(\'' + cid + '\',\'date\',this.value)"></div></div>';
         html += buildTimeRowHtml(cid);
       } else if (f.type === 'monthly') {
         html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-hashtag"></i> Date Chuno (1-31)</span>' +
@@ -7095,6 +7172,7 @@
         }
         html += buildTimeRowHtml(cid);
       } else if (f.type === 'alternate') {
+        html += altSkipSelectorHtml();
         html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-shuffle"></i> Din Chuno</span>' +
           '<div class="day-toggle-grid">' + weekDayGridHtml(cid, true) + '</div></div>';
       } else if (f.type === 'weekly') {
@@ -7106,19 +7184,16 @@
       html += buildFrequencySummaryHtml(cid);
       return html;
     }
-    function refreshFrequencyDetail(cid) {
-      var el = document.getElementById('freq-detail-' + cid);
-      if (el) el.innerHTML = buildFrequencyDetailHtml(cid);
-    }
     function selectFrequency(cid, key) {
-      scheduleFrequency = { type: key, date: '', time: '', month: '', monthDate: '', days: [] };
+      scheduleFrequency = { type: key, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
       saveScheduleFrequency();
-      renderFrequencyCard(cid);
+      syncFrequencyCards();
     }
     function clearFrequencySelection(cid) {
-      scheduleFrequency = { type: null, date: '', time: '', month: '', monthDate: '', days: [] };
+      var keepType = scheduleFrequency.type;
+      scheduleFrequency = { type: keepType, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
       saveScheduleFrequency();
-      renderFrequencyCard(cid);
+      syncFrequencyCards();
     }
     function buildFrequencyCardHtml(cid) {
       var optsHtml = FREQ_OPTIONS.map(function (o) {
@@ -7128,10 +7203,13 @@
         '<div class="freq-options">' + optsHtml + '</div>' +
         '<div class="freq-detail" id="freq-detail-' + cid + '">' + buildFrequencyDetailHtml(cid) + '</div></div>';
     }
-    function renderFrequencyCard(cid) {
-      var wrap = document.getElementById('freq-card-wrap-' + cid);
-      if (wrap) wrap.innerHTML = buildFrequencyCardHtml(cid);
+    function syncFrequencyCards() {
+      FREQ_CARD_IDS.forEach(function (cid) {
+        var wrap = document.getElementById('freq-card-wrap-' + cid);
+        if (wrap) wrap.innerHTML = buildFrequencyCardHtml(cid);
+      });
     }
+    function renderFrequencyCard(cid) { syncFrequencyCards(); }
 
     // ============================================================
     // CART
