@@ -2187,6 +2187,81 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
     }
 
+    .auto-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .7rem;
+      padding-top: .7rem;
+      border-top: 1px dashed #e3e7e5;
+    }
+
+    .auto-cancel-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .auto-status-wrap {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .auto-status-label {
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    .auto-status-label.on { color: #16a34a; }
+    .auto-status-label.off { color: var(--danger); }
+
+    .auto-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .auto-switch input { opacity: 0; width: 0; height: 0; }
+
+    .auto-switch-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: var(--danger);
+      border-radius: 50px;
+      transition: .25s;
+    }
+
+    .auto-switch-slider::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: .25s;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+    }
+
+    .auto-switch input:checked+.auto-switch-slider {
+      background: #22c55e;
+    }
+
+    .auto-switch input:checked+.auto-switch-slider::before {
+      transform: translateX(20px);
+    }
+
     .freq-summary {
       margin-top: 1rem;
       background: #f0fdf4;
@@ -7244,13 +7319,34 @@
       }
       wrap.innerHTML = automationOrders.map(function (order) {
         var freqText = frequencySummaryText(order.frequency);
+        var isOn = order.active !== false;
         return '<div class="sd-item-card" style="display:block;position:relative;padding:1rem;">' +
           '<button onclick="editAutomationOrder(\'' + order.id + '\')" style="position:absolute;top:.7rem;right:.7rem;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);"><i class="fa fa-pen"></i></button>' +
           '<div style="font-weight:800;color:var(--green);font-size:.85rem;margin-bottom:.3rem;padding-right:2.5rem"><i class="fa fa-clock"></i> ' + freqText + '</div>' +
           buildAutomationOrderTable(order) +
-          '<button onclick="deleteAutomationOrder(\'' + order.id + '\')" style="margin-top:.5rem;background:none;border:none;color:var(--danger);font-size:.78rem;font-weight:700;cursor:pointer;"><i class="fa fa-trash"></i> Delete</button>' +
+          '<div class="auto-status-row">' +
+          '<button class="auto-cancel-btn" onclick="deleteAutomationOrder(\'' + order.id + '\')"><i class="fa fa-ban"></i> Cancel This Order</button>' +
+          '<div class="auto-status-wrap">' +
+          '<span class="auto-status-label ' + (isOn ? 'on' : 'off') + '" id="auto-status-label-' + order.id + '">' + (isOn ? 'On' : 'Temporary Off') + '</span>' +
+          '<label class="auto-switch"><input type="checkbox" ' + (isOn ? 'checked' : '') + ' onchange="toggleAutomationOrderStatus(\'' + order.id + '\',this.checked)"><span class="auto-switch-slider"></span></label>' +
+          '</div>' +
+          '</div>' +
           '</div>';
       }).join('');
+    }
+
+    function toggleAutomationOrderStatus(id, isOn) {
+      var order = automationOrders.find(function (o) { return o.id === id; });
+      if (!order) return;
+      order.active = isOn;
+      saveAutomationOrders();
+      var label = document.getElementById('auto-status-label-' + id);
+      if (label) {
+        label.textContent = isOn ? 'On' : 'Temporary Off';
+        label.classList.remove('on', 'off');
+        label.classList.add(isOn ? 'on' : 'off');
+      }
+      showToast(isOn ? 'Order phir se ON ho gaya' : 'Order temporary OFF kar diya', 'success');
     }
 
     function deleteAutomationOrder(id) {
