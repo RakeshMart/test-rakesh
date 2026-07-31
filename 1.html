@@ -1811,6 +1811,91 @@
       background: #16a34a;
     }
 
+    .add-btn-green {
+      background: #22c55e !important;
+    }
+
+    .schedule-header-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #22c55e;
+      color: #fff;
+      font-size: .62rem;
+      font-weight: 800;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 50px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid #fff;
+    }
+
+    .schedule-header-badge.show {
+      display: flex;
+    }
+
+    .sd-item-card {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      background: #fff;
+      border-radius: 16px;
+      padding: .8rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
+      margin-bottom: 1rem;
+    }
+
+    .sd-item-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: #f4f6f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .sd-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sd-item-name {
+      font-weight: 800;
+      font-size: .9rem;
+      color: var(--text);
+    }
+
+    .sd-item-price {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: .95rem;
+      margin-top: .2rem;
+    }
+
+    .sd-total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f4f6f5;
+      border-radius: 12px;
+      padding: .8rem 1rem;
+      font-weight: 800;
+      font-size: .95rem;
+      margin-top: .8rem;
+    }
+
+    .sd-total-row span:last-child {
+      color: #22c55e;
+      font-size: 1.1rem;
+    }
+
     .detail-tags {
       display: flex;
       gap: .5rem;
@@ -4727,6 +4812,9 @@
           Orders</a>
         <a href="#profile" class="menu-link" onclick="showTab('profile');closeMenu()"><i class="fa fa-user"></i>
           Profile</a>
+        <a href="#schedule-items" class="menu-link" onclick="openScheduleItemsPage();closeMenu()"><i
+            class="fa fa-calendar-check"></i>
+          Schedule Items</a>
         <div class="menu-divider"></div>
         <a href="#about" class="menu-link" onclick="showTab('about');closeMenu()"><i class="fa fa-info-circle"></i>
           About Us</a>
@@ -4796,6 +4884,73 @@
     </div>
 
     <!-- WISHLIST FULL PAGE -->
+    <!-- SCHEDULE DETAIL PAGE -->
+    <div id="schedule-detail-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:650;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><i class="fa fa-calendar-check" style="color:#22c55e;font-size:1.3rem;"></i></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" onclick="closeScheduleDetailPage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="wp-body">
+        <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Add to Schedule</div>
+        <div id="schedule-detail-content"></div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE BROWSE PAGE -->
+    <div id="schedule-browse-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><img
+              src="https://raw.githubusercontent.com/RakeshMart/Rakesh-logo/main/rakesh-mart-logo.jpg"
+              alt="Rakesh Mart"></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" title="Schedule">
+              <i class="fa fa-clock"></i>
+              <span class="wp-badge schedule-header-badge" id="sb-header-badge">0</span>
+            </button>
+            <button class="wp-icon-btn" onclick="closeScheduleBrowsePage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <div class="wp-search-wrap show" id="sb-search-wrap">
+          <input type="text" class="wp-search-input" id="sb-search-input" placeholder="Item dhundho..."
+            oninput="filterScheduleBrowsePage()">
+        </div>
+      </div>
+      <div class="wp-body">
+        <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Item Chuno</div>
+        <div class="products-grid" id="schedule-browse-grid"></div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE ITEMS LIST PAGE -->
+    <div id="schedule-items-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><i class="fa fa-calendar-check" style="color:#22c55e;font-size:1.3rem;"></i></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" onclick="closeScheduleItemsPage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="wp-body">
+        <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Schedule Items</div>
+        <div id="schedule-items-list"></div>
+      </div>
+    </div>
+
     <div id="wishlist-page"
       style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
       <div class="wp-header">
@@ -4808,7 +4963,8 @@
               <i class="fa fa-bell"></i>
               <span class="wp-badge" id="wp-notif-badge">0</span>
             </button>
-            <button class="wp-icon-btn" onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
+            <button class="wp-icon-btn"
+              onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
               <i class="fa fa-bag-shopping"></i>
               <span class="wp-badge" id="wp-cart-badge">0</span>
             </button>
@@ -5331,6 +5487,7 @@
     var currentUser = null; var cart = []; var orders = []; var products = [];
     var currentOrderId = ""; var selectedPayment = "upi";
     var currentProductId = null; var detailQty = 1;
+    var scheduleItems = []; var scheduleQty = 1; var scheduleCurrentProductId = null;
     var activeCategory = 'All'; var activeTab = 'home';
     var trackRefreshTimer = null; var chatRefreshTimer = null; var ordersRefreshTimer = null; var chatBadgeTimer = null; var chatBadgeTimer = null;
     var searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
@@ -5815,6 +5972,7 @@
       if (!currentUser) { var modal = document.getElementById('reg-modal'); if (modal) modal.classList.add('open'); }
 
       var savedCart = localStorage.getItem('kiranaCart'); if (savedCart) { cart = JSON.parse(savedCart); updateCartBadges(); }
+      var savedSchedule = localStorage.getItem('kiranaSchedule'); if (savedSchedule) { scheduleItems = JSON.parse(savedSchedule); } updateScheduleBadge();
       var savedOrders = localStorage.getItem('kiranaOrders'); if (savedOrders) orders = JSON.parse(savedOrders);
       try { var pr = localStorage.getItem('pendingReward'); if (pr) pendingRewardItem = JSON.parse(pr); } catch (e) { }
       var savedLang = localStorage.getItem("lang"); if (savedLang) currentLang = savedLang;
@@ -6443,7 +6601,129 @@
     function changeQty(d) { detailQty = Math.max(1, detailQty + d); document.getElementById('qty-val').textContent = detailQty; }
     function addToCartDetail() { for (var i = 0; i < detailQty; i++)addToCart(currentProductId, false); showToast(detailQty + ' item cart mein dala', 'success'); detailQty = 1; }
     function buyNow() { addToCartDetail(); showTab('cart'); }
-    function addToSchedule() { }
+    function addOrUpdateScheduleItem(id, qty) {
+      var ex = scheduleItems.find(function (s) { return String(s.id) == String(id); });
+      if (ex) {
+        ex.qty = qty;
+      } else {
+        var p = products.find(function (x) { return x.id == id; }); if (!p) return;
+        scheduleItems.push({ id: p.id, name: p.name, name_hi: p.name_hi, name_en: p.name_en, price: p.price, img: p.img, qty: qty });
+      }
+      localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+      updateScheduleBadge();
+    }
+    function removeScheduleItem(id) {
+      scheduleItems = scheduleItems.filter(function (s) { return String(s.id) != String(id); });
+      localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+      updateScheduleBadge(); renderScheduleItemsList();
+    }
+    function updateScheduleBadge() {
+      var count = scheduleItems.reduce(function (s, i) { return s + i.qty; }, 0);
+      var badges = document.querySelectorAll('.schedule-header-badge');
+      badges.forEach(function (b) { b.textContent = count; b.classList.toggle('show', count > 0); });
+    }
+    function addToSchedule() {
+      scheduleCurrentProductId = currentProductId; scheduleQty = 1;
+      var p = products.find(function (x) { return x.id == currentProductId; }); if (!p) return;
+      addOrUpdateScheduleItem(currentProductId, scheduleQty);
+      renderScheduleDetail(p);
+      document.getElementById('schedule-detail-page').style.display = 'flex';
+    }
+    function renderScheduleDetail(p) {
+      var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
+      if (firstImg) { imgHtml = '<img src="' + firstImg + '" onerror="this.parentElement.innerHTML=\'<i class=fa fa-box></i>\'">'; } else { imgHtml = '<i class="fa fa-box" style="font-size:2rem;color:var(--muted)"></i>'; }
+      document.getElementById('schedule-detail-content').innerHTML =
+        '<div class="sd-item-card"><div class="sd-item-img">' + imgHtml + '</div>' +
+        '<div class="sd-item-info"><div class="sd-item-name">' + getName(p) + '</div>' +
+        '<div class="sd-item-price">₹' + p.price + '</div></div></div>' +
+        '<div class="qty-row"><span class="qty-label"><i class="fa fa-layer-group"></i> ' + t('quantity') + '</span>' +
+        '<div class="qty-ctrl"><button class="qty-btn" onclick="changeScheduleQty(-1)"><i class="fa fa-minus"></i></button>' +
+        '<span class="qty-val" id="sd-qty-val">1</span>' +
+        '<button class="qty-btn" onclick="changeScheduleQty(1)"><i class="fa fa-plus"></i></button></div></div>' +
+        '<div class="sd-total-row"><span>Total</span><span id="sd-total-price">₹' + p.price + '</span></div>' +
+        '<button class="btn btn-schedule" style="width:100%;margin-top:1rem" onclick="openScheduleBrowsePage()"><i class="fa fa-plus"></i> Add More Item</button>';
+    }
+    function changeScheduleQty(d) {
+      scheduleQty = Math.max(1, scheduleQty + d);
+      var p = products.find(function (x) { return x.id == scheduleCurrentProductId; }); if (!p) return;
+      document.getElementById('sd-qty-val').textContent = scheduleQty;
+      document.getElementById('sd-total-price').textContent = '₹' + (p.price * scheduleQty);
+      addOrUpdateScheduleItem(scheduleCurrentProductId, scheduleQty);
+    }
+    function closeScheduleDetailPage() {
+      document.getElementById('schedule-detail-page').style.display = 'none';
+    }
+    function buildScheduleCardHtml(p) {
+      var stars = ''; for (var i = 0; i < Math.round(p.rating || 4); i++)stars += '<i class="fa fa-star"></i>'; for (var i = Math.round(p.rating || 4); i < 5; i++)stars += '<i class="fa-regular fa-star"></i>';
+      var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
+      if (firstImg) { imgHtml = '<img src="' + firstImg + '" onerror="this.outerHTML=\'<i class=fa fa-box style=font-size:3rem></i>\'" loading="lazy">'; } else { imgHtml = '<i class="fa fa-box" style="font-size:3rem;color:var(--muted)"></i>'; }
+      var wCode = p.wishlistCode || '';
+      var isWished = wCode && wishlistCodesSet[wCode];
+      return '<div class="product-card" onclick="showProduct(' + p.id + ')">' +
+        '<div class="product-img">' + (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') +
+        (wCode ? '<button class="wishlist-heart-btn' + (isWished ? ' active' : '') + '" data-wcode="' + wCode + '" onclick="event.stopPropagation();toggleWishlist(\'' + wCode + '\',\'' + String(getName(p)).replace(/'/g, "\\'") + '\',this)"><i class="fa' + (isWished ? '-solid' : '-regular') + ' fa-heart"></i></button>' : '') +
+        imgHtml + '</div>' +
+        '<div class="product-body"><div class="product-cat">' + getProductCatDisplay(p) + '</div><div class="product-name">' + getName(p) + '</div><div class="product-desc">' + getDesc(p) + '</div>' +
+        '<div class="product-rating">' + stars + ' <span>' + (p.rating || 4.0) + '</span></div>' +
+        '<div class="price-row"><span class="price">₹' + p.price + '</span>' + (p.orig ? '<span class="price-old">₹' + p.orig + '</span>' : '') +
+        '</div><button class="add-btn add-btn-green" onclick="event.stopPropagation();addItemToScheduleFromGrid(' + p.id + ',this)"><i class="fa fa-calendar-plus"></i> Add to Schedule<div class="btn-toast"><i class="fa fa-check"></i> Added!</div></button></div></div>';
+    }
+    function renderScheduleBrowseGrid(filterText) {
+      var grid = document.getElementById('schedule-browse-grid');
+      if (!grid) return;
+      var items = products;
+      if (filterText) {
+        var q = filterText.toLowerCase();
+        items = items.filter(function (p) { return String(getName(p)).toLowerCase().indexOf(q) !== -1; });
+      }
+      if (!items.length) { grid.innerHTML = '<div class="wp-empty"><i class="fa fa-magnifying-glass"></i><p>Koi item nahi mila</p></div>'; return; }
+      grid.innerHTML = items.map(function (p) { return buildScheduleCardHtml(p); }).join('');
+    }
+    function filterScheduleBrowsePage() {
+      renderScheduleBrowseGrid(document.getElementById('sb-search-input').value);
+    }
+    function addItemToScheduleFromGrid(id, btn) {
+      var ex = scheduleItems.find(function (s) { return String(s.id) == String(id); });
+      var qty = ex ? ex.qty + 1 : 1;
+      addOrUpdateScheduleItem(id, qty);
+      if (btn) { var toast = btn.querySelector('.btn-toast'); if (toast) { toast.classList.add('show'); setTimeout(function () { toast.classList.remove('show'); }, 1200); } }
+    }
+    function openScheduleBrowsePage() {
+      document.getElementById('schedule-detail-page').style.display = 'none';
+      document.getElementById('schedule-browse-page').style.display = 'flex';
+      var si = document.getElementById('sb-search-input'); if (si) si.value = '';
+      renderScheduleBrowseGrid();
+      updateScheduleBadge();
+    }
+    function closeScheduleBrowsePage() {
+      document.getElementById('schedule-browse-page').style.display = 'none';
+      showTab('home');
+    }
+    function openScheduleItemsPage() {
+      document.getElementById('schedule-items-page').style.display = 'flex';
+      renderScheduleItemsList();
+    }
+    function closeScheduleItemsPage() {
+      document.getElementById('schedule-items-page').style.display = 'none';
+    }
+    function renderScheduleItemsList() {
+      var list = document.getElementById('schedule-items-list');
+      if (!list) return;
+      if (!scheduleItems.length) {
+        list.innerHTML = '<div class="wp-empty"><i class="fa fa-calendar-xmark"></i><p>Schedule khali hai</p></div>';
+        return;
+      }
+      list.innerHTML = scheduleItems.map(function (item) {
+        var imgHtml = (item.img && item.img.startsWith && item.img.startsWith('http'))
+          ? '<img src="' + item.img + '" onerror="this.parentElement.innerHTML=\'<i class=fa fa-box></i>\'">'
+          : '<i class="fa fa-box" style="font-size:2rem;color:var(--muted)"></i>';
+        return '<div class="cart-item"><div class="cart-img">' + imgHtml + '</div>' +
+          '<div class="cart-info"><div class="cart-name">' + getName(item) + '</div>' +
+          '<div class="cart-price">₹' + (item.price * item.qty) + '</div>' +
+          '<div class="cart-controls"><span style="color:var(--muted);font-size:.75rem">Qty: ' + item.qty + ' × ₹' + item.price + '</span>' +
+          '<button class="cart-remove" onclick="removeScheduleItem(' + item.id + ')"><i class="fa fa-trash"></i> ' + t('remove') + '</button></div></div></div>';
+      }).join('');
+    }
 
     // ============================================================
     // CART
