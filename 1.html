@@ -2005,6 +2005,146 @@
       color: #fff;
     }
 
+    .time-picker-row {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      flex-wrap: wrap;
+    }
+
+    .time-fmt-btn {
+      padding: .5rem .8rem;
+      border-radius: 10px;
+      border: 1.5px solid #22c55e;
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      color: #16a34a;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      transition: .2s;
+      flex-shrink: 0;
+    }
+
+    .time-fmt-btn:hover {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+    }
+
+    .time-picker-box {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: linear-gradient(135deg, #ffffff, #f8faf9);
+      border: 1.5px solid #e3e7e5;
+      border-radius: 16px;
+      padding: .6rem .9rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
+    }
+
+    .tp-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .tp-arrow {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: .68rem;
+      box-shadow: 0 2px 6px rgba(34, 197, 94, .35);
+      transition: .15s;
+    }
+
+    .tp-arrow:hover { transform: scale(1.1); }
+    .tp-arrow:active { transform: scale(.9); }
+
+    .tp-input {
+      width: 46px;
+      text-align: center;
+      padding: .45rem 0;
+      border-radius: 10px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+      outline: none;
+    }
+
+    .tp-input:focus { border-color: #22c55e; background: #fff; }
+
+    .tp-ampm-val {
+      width: 46px;
+      text-align: center;
+      padding: .45rem 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      font-family: 'Baloo 2', sans-serif;
+      font-size: .85rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(34, 197, 94, .3);
+    }
+
+    .tp-colon {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--muted);
+      padding-bottom: .3rem;
+    }
+
+    .tp-col-ampm { margin-left: .2rem; }
+
+    .skip-selector {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .skip-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .skip-btn:hover { border-color: #22c55e; color: #16a34a; }
+
+    .skip-btn.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, .35);
+      transform: scale(1.08);
+    }
+
     .freq-summary {
       margin-top: 1rem;
       background: #f0fdf4;
@@ -7144,8 +7284,8 @@
       if (f.type === 'onetime' && f.date) { text = 'One Time — ' + formatDateDisplay(f.date) + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
       else if (f.type === 'monthly' && f.monthDate) { text = 'Monthly — Date ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
       else if (f.type === 'yearly' && f.month && f.monthDate) { text = 'Yearly — ' + f.month + ' ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
-      else if (f.type === 'alternate' && f.days && f.days.length) { text = 'Alternate Din — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', '); }
-      else if (f.type === 'weekly' && f.days && f.days.length) { text = 'Weekly — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', '); }
+      else if (f.type === 'alternate' && f.days && f.days.length) { text = 'Alternate Din — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', ') + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'weekly' && f.days && f.days.length) { text = 'Weekly — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', ') + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
       else if (f.type === 'daily') { text = 'Daily' + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
       if (!text) return '';
       return '<div class="freq-summary"><div class="freq-summary-text"><i class="fa fa-circle-check"></i> ' + text + '</div>' +
@@ -7175,9 +7315,11 @@
         html += altSkipSelectorHtml();
         html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-shuffle"></i> Din Chuno</span>' +
           '<div class="day-toggle-grid">' + weekDayGridHtml(cid, true) + '</div></div>';
+        html += buildTimeRowHtml(cid);
       } else if (f.type === 'weekly') {
         html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar-days"></i> Din Chuno</span>' +
           '<div class="day-toggle-grid">' + weekDayGridHtml(cid, false) + '</div></div>';
+        html += buildTimeRowHtml(cid);
       } else if (f.type === 'daily') {
         html += buildTimeRowHtml(cid);
       }
