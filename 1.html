@@ -5366,7 +5366,12 @@
       </div>
       <div class="wp-body">
         <div id="automation-new-order-content">
-          <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Schedule Items</div>
+          <div class="wp-title-row" style="justify-content:space-between;">
+            <span><i class="fa fa-calendar-check" style="color:#22c55e"></i> Schedule Items</span>
+            <button onclick="handleAddItemFromScheduleList()"
+              style="padding:.5rem 1rem;border-radius:50px;border:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;box-shadow:0 4px 12px rgba(34,197,94,.3);"><i
+                class="fa fa-plus"></i> Add Item</button>
+          </div>
           <div id="schedule-items-list"></div>
           <div id="freq-card-wrap-list"></div>
           <button class="add-more-btn" id="set-automation-btn" style="margin-top:1rem" onclick="setAutomationOrder()"><i
@@ -7150,6 +7155,12 @@
     function saveAutomationOrders() { localStorage.setItem('kiranaAutomationOrders', JSON.stringify(automationOrders)); }
 
     var scheduleBrowseReturnTo = 'home'; // 'home' ya 'scheduleItems' — batata hai wapas kahan jaana hai
+
+    function handleAddItemFromScheduleList() {
+      scheduleBrowseReturnTo = 'scheduleItems';
+      document.getElementById('schedule-items-page').style.display = 'none';
+      openScheduleBrowsePage();
+    }
 
     function handleNewOrderTabClick() {
       var newBtn = document.getElementById('atab-new');
