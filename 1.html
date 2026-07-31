@@ -2262,6 +2262,16 @@
       transform: translateX(20px);
     }
 
+    .disc-check-zoom {
+      animation: discZoom .4s ease;
+    }
+
+    @keyframes discZoom {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
     .alt-understand-btn {
       display: inline-flex;
       align-items: center;
@@ -5422,6 +5432,23 @@
       </div>
     </div>
 
+    <!-- SCHEDULE AUTO-PAY DISCLAIMER MODAL -->
+    <div class="track-modal" id="disclaimer-modal">
+      <div class="track-sheet">
+        <div class="sheet-handle"></div>
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;">
+          <div class="back-icon-btn" onclick="closeDisclaimerPopup()"><i class="fa fa-arrow-left"></i></div>
+          <div style="font-weight:800;font-size:.95rem;"><i class="fa fa-circle-info" style="color:#22c55e"></i> Auto-Pay Disclaimer</div>
+        </div>
+        <div style="font-size:.85rem;line-height:1.8;color:var(--text)">
+          <p><b>Hindi:</b> Auto pay set karne par, "One Time" waale ke liye jis date/time par set kiya hai, usi date aur time par aapke bank account se automatically paise cut jaayenge. "Daily/Weekly/Monthly/Yearly/Alternative" waale ke liye har baar order lagega aur usi tay time par payment automatic cut jayegi.</p>
+          <p><b>English:</b> Once auto-pay is set, on a One Time schedule, the payment will be deducted automatically from your bank account on the selected date and time. For recurring schedules (Daily/Weekly/Monthly/Yearly/Alternative), an order will be placed and payment auto-deducted each time at the set time — all automatically.</p>
+          <p><b>Hinglish:</b> Auto pay set karne ke baad ye pura process automatic ho jayega — aapko baar baar order lagane ki zaroorat nahi. Aap kabhi bhi "Temporary Off" karke ise pause kar sakte ho.</p>
+        </div>
+        <button class="place-order-btn" style="margin-top:1rem" onclick="closeDisclaimerPopup()"><i class="fa fa-check"></i> Samajh Gaya</button>
+      </div>
+    </div>
+
     <!-- NOTIFICATION PANEL - NEW DESIGN -->
     <div id="notif-panel">
       <div class="notif-sheet">
@@ -5968,7 +5995,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzhou_QJ0_DA5_E-hCPZNFq51eicSqHI65oZfoZWlZo0whzfo0buYeDTY1lm4bHCTfx/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxmqow1trlQ5mz4ufmDt7QNk7s5fqmmXYNbPp0rvEkBCKj1P54K7n15PZNwA-Z11K_ySQ/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
     var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true, mainAddress: false }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega), Main Address default OFF (sheet se ON ho to hi dikhega)
@@ -7423,6 +7450,7 @@
         label.classList.remove('on', 'off');
         label.classList.add(isOn ? 'on' : 'off');
       }
+      postToSheet({ action: 'updateScheduleOrderStatus', orderId: id, status: getScheduleStatusForOrder(order, isOn) });
       showToast(isOn ? 'Order phir se ON ho gaya' : 'Order temporary OFF kar diya', 'success');
     }
 
@@ -7430,6 +7458,7 @@
       if (!confirm('Ye automation order delete karna hai?')) return;
       automationOrders = automationOrders.filter(function (o) { return o.id !== id; });
       saveAutomationOrders();
+      postToSheet({ action: 'deleteScheduleOrder', orderId: id });
       renderAutomationOrdersList();
       if (!automationOrders.length) {
         var tabsEl = document.getElementById('automation-tabs');
@@ -7462,6 +7491,16 @@
       if (f.type === 'monthly' && !f.monthDate) { showToast('Date chuno', 'error'); return; }
       if (f.type === 'yearly' && (!f.month || !f.monthDate)) { showToast('Month aur Date chuno', 'error'); return; }
       if ((f.type === 'alternate' || f.type === 'weekly') && (!f.days || !f.days.length)) { showToast('Din chuno', 'error'); return; }
+      if (!currentUser) { showToast('Pehle login karo', 'error'); return; }
+
+      var activeCid = (document.getElementById('schedule-detail-page').style.display === 'flex') ? 'detail' : 'list';
+      var discCb = document.getElementById('disclaimer-check-' + activeCid);
+      if (!discCb || !discCb.checked) {
+        showToast('Pehle disclaimer checkbox tick karo', 'error');
+        var discWrap = document.getElementById('disc-wrap-' + activeCid);
+        if (discWrap) { discWrap.classList.add('disc-check-zoom'); setTimeout(function () { discWrap.classList.remove('disc-check-zoom'); }, 400); }
+        return;
+      }
 
       var order = {
         id: editingAutomationOrderId || ('AUTO-' + Date.now()),
@@ -7478,6 +7517,24 @@
         automationOrders.unshift(order);
       }
       saveAutomationOrders();
+
+      postToSheet({
+        action: 'saveScheduleOrder',
+        order: {
+          id: order.id,
+          items: order.items,
+          scheduledDate: computeScheduledDateString(f),
+          scheduleTime: f.time ? formatTimeDisplay(f.time) : '',
+          subscribeDate: order.createdAt,
+          repeatTime: REPEAT_LABELS[f.type] || f.type,
+          status: getScheduleStatusForOrder(order, true)
+        },
+        user: {
+          name: (currentUser.fname + ' ' + (currentUser.lname || '')).trim(),
+          phone: currentUser.phone,
+          email: currentUser.googleEmail || ''
+        }
+      });
 
       scheduleItems = [];
       localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
@@ -7554,6 +7611,19 @@
     var FREQ_CARD_IDS = ['detail', 'list'];
 
     function saveScheduleFrequency() { localStorage.setItem('kiranaScheduleFreq', JSON.stringify(scheduleFrequency)); }
+    var REPEAT_LABELS = { daily: 'daily', onetime: 'one time', monthly: 'monthly', yearly: 'yearly', alternate: 'alternative', weekly: 'weekly' };
+    function computeScheduledDateString(f) {
+      if (f.type === 'onetime') return formatDateDisplay(f.date);
+      if (f.type === 'monthly') return f.monthDate + ' tarikh';
+      if (f.type === 'yearly') { var mi = MONTH_NAMES.indexOf(f.month); return f.monthDate + ' tarikh ' + (mi + 1) + ' months'; }
+      if (f.type === 'alternate') { var d = (f.days && f.days.length) ? WEEK_DAYS[f.days[0]] : ''; return d + '_' + (f.altSkip || 1); }
+      if (f.type === 'weekly') return (f.days || []).map(function (d) { return WEEK_DAYS[d]; }).join(',');
+      return '';
+    }
+    function getScheduleStatusForOrder(order, isOn) {
+      if (order.frequency.type === 'onetime') return isOn === false ? 'off' : 'temp on';
+      return isOn === false ? 'temp off' : 'on';
+    }
     function todayStrGlobal() {
       var d = new Date(); var m = ('0' + (d.getMonth() + 1)).slice(-2); var day = ('0' + d.getDate()).slice(-2);
       return d.getFullYear() + '-' + m + '-' + day;
@@ -7802,10 +7872,19 @@
       var optsHtml = FREQ_OPTIONS.map(function (o) {
         return '<button class="freq-opt' + (scheduleFrequency.type === o.key ? ' active' : '') + '" onclick="selectFrequency(\'' + cid + '\',\'' + o.key + '\')"><i class="fa ' + o.icon + '"></i> ' + o.label + '</button>';
       }).join('');
+      var discHtml = '<div class="freq-row" id="disc-wrap-' + cid + '" style="display:flex;align-items:flex-start;gap:.6rem;margin-top:.8rem;padding-top:.8rem;border-top:1px dashed #e3e7e5">' +
+        '<input type="checkbox" id="disclaimer-check-' + cid + '" style="width:20px;height:20px;flex-shrink:0;accent-color:#22c55e;cursor:pointer;margin-top:2px">' +
+        '<label for="disclaimer-check-' + cid + '" style="font-size:.78rem;color:var(--muted);line-height:1.5">' +
+        'Main samajhta/samajhti hoon ki automatic payment set ho jayega. ' +
+        '<span style="color:var(--info);font-weight:800;cursor:pointer;text-decoration:underline" onclick="openDisclaimerPopup()">Click here to read</span>' +
+        '</label></div>';
       return '<div class="freq-card"><div class="freq-card-header"><i class="fa fa-calendar-check"></i> Schedule For</div>' +
         '<div class="freq-options">' + optsHtml + '</div>' +
-        '<div class="freq-detail" id="freq-detail-' + cid + '">' + buildFrequencyDetailHtml(cid) + '</div></div>';
+        '<div class="freq-detail" id="freq-detail-' + cid + '">' + buildFrequencyDetailHtml(cid) + '</div>' +
+        discHtml + '</div>';
     }
+    function openDisclaimerPopup() { document.getElementById('disclaimer-modal').classList.add('open'); }
+    function closeDisclaimerPopup() { document.getElementById('disclaimer-modal').classList.remove('open'); }
     function syncFrequencyCards() {
       FREQ_CARD_IDS.forEach(function (cid) {
         var wrap = document.getElementById('freq-card-wrap-' + cid);
