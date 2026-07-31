@@ -87,6 +87,11 @@
       padding-bottom: 0;
     }
 
+    body.fixed-page-open {
+      overflow: hidden;
+      height: 100vh;
+    }
+
     h1,
     h2,
     h3 {
@@ -7064,6 +7069,7 @@
       renderScheduleDetail(p);
       document.getElementById('schedule-detail-page').style.display = 'flex';
       renderFrequencyCard('detail');
+      document.body.classList.add('fixed-page-open');
     }
     function renderScheduleDetail(p) {
       var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
@@ -7088,6 +7094,7 @@
     }
     function closeScheduleDetailPage() {
       document.getElementById('schedule-detail-page').style.display = 'none';
+      document.body.classList.remove('fixed-page-open');
     }
     function buildScheduleCardHtml(p) {
       var stars = ''; for (var i = 0; i < Math.round(p.rating || 4); i++)stars += '<i class="fa fa-star"></i>'; for (var i = Math.round(p.rating || 4); i < 5; i++)stars += '<i class="fa-regular fa-star"></i>';
@@ -7131,6 +7138,7 @@
       renderScheduleBrowseGrid();
       updateScheduleBadge();
       if (scheduleBrowseReturnTo !== 'scheduleItems') scheduleBrowseReturnTo = 'home';
+      document.body.classList.add('fixed-page-open');
     }
     function closeScheduleBrowsePage() {
       document.getElementById('schedule-browse-page').style.display = 'none';
@@ -7140,6 +7148,7 @@
         renderScheduleItemsList();
         syncFrequencyCards();
       } else {
+        document.body.classList.remove('fixed-page-open');
         showTab('home');
       }
     }
@@ -7151,9 +7160,11 @@
       renderScheduleItemsList();
       renderFrequencyCard('list');
       setAutomationTab('new');
+      document.body.classList.add('fixed-page-open');
     }
     function closeScheduleItemsPage() {
       document.getElementById('schedule-items-page').style.display = 'none';
+      document.body.classList.remove('fixed-page-open');
     }
     function saveAutomationOrders() { localStorage.setItem('kiranaAutomationOrders', JSON.stringify(automationOrders)); }
 
@@ -9431,9 +9442,11 @@
       toggleWishlistSearchBar();
       renderWishlistPage();
       syncWishlistPageBadges();
+      document.body.classList.add('fixed-page-open');
     }
     function closeWishlistPage() {
       document.getElementById('wishlist-page').style.display = 'none';
+      document.body.classList.remove('fixed-page-open');
       showTab('home');
     }
     function toggleWishlistSearchBar() {
