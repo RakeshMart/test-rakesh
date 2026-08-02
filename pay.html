@@ -8077,8 +8077,9 @@
       })
         .then(function (r) { return r.json(); })
         .then(function (mandateData) {
+          console.log('Mandate order response:', mandateData);
           if (!mandateData.success) {
-            showToast(mandateData.message || 'AutoPay setup nahi ho paaya', 'error');
+            alert('AutoPay Error: ' + (mandateData.message || 'Unknown error'));
             onDone();
             return;
           }
